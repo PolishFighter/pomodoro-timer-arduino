@@ -11,6 +11,10 @@ void Pomodoro::init(){
     _lcd.backlight();
     _lcd.setCursor(0, 0);
     _time = _focusTime;
+    _clockAnim = 0;
+
+    for(int i = 0; i < 8; i++)
+        _lcd.createChar(i, clockChar[i]);
 }
 
 void Pomodoro::update(){
@@ -25,6 +29,11 @@ void Pomodoro::update(){
 
 void Pomodoro::updateLcd(){
     _lcd.clear();
+    _lcd.setCursor(1,0);
+    _clockAnim++;
+    _clockAnim = _clockAnim % 8;
+    _lcd.write(_clockAnim);
+
     _lcd.setCursor(3,0);
 
     uint16_t minutes = _time/60;
@@ -36,7 +45,7 @@ void Pomodoro::updateLcd(){
     _lcd.print(minutes);
 
     _lcd.print(":");
-    
+
     if(seconds < 10){
         _lcd.print("0");
     }
