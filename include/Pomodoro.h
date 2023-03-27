@@ -5,17 +5,18 @@
 class Pomodoro 
 {
 public:
-    Pomodoro(uint8_t lcd_Addr = 0x27, uint8_t lcd_cols = 16, uint8_t lcd_rows = 2);
+    Pomodoro(uint8_t buzz_pin = 9, uint8_t lcd_Addr = 0x27, uint8_t lcd_cols = 16, uint8_t lcd_rows = 2);
     void init();
     void update();
 private:
     enum class State {Focus, Break};
     LiquidCrystal_I2C _lcd;
     State _state;
+    uint8_t _buzzPin;
     uint16_t _time;
     uint8_t _clockAnim;
-    uint16_t _breakTime = 60 * 5;
-    uint16_t _focusTime = 60 * 25;
+    uint16_t _breakTime = 5;
+    uint16_t _focusTime = 10;
     uint8_t clockChar[8][8] = {{
         0b00000,
         0b01110,
@@ -98,4 +99,5 @@ private:
         };
 
     void updateLcd();
+    void buzz();
 };

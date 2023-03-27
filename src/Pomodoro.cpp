@@ -1,8 +1,8 @@
 #include <Pomodoro.h>
 #include <Arduino.h>
 
-Pomodoro::Pomodoro(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows )
-: _lcd{lcd_Addr, lcd_cols, lcd_rows}
+Pomodoro::Pomodoro(uint8_t buzz_pin, uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows )
+:_buzzPin{buzz_pin}, _lcd{lcd_Addr, lcd_cols, lcd_rows}
 {
 }
 
@@ -10,6 +10,7 @@ void Pomodoro::init(){
     _lcd.init();
     _lcd.backlight();
     _lcd.setCursor(0, 0);
+    pinMode(_buzzPin, OUTPUT); 
     _time = _focusTime;
     _clockAnim = 0;
 
@@ -23,6 +24,7 @@ void Pomodoro::update(){
     if(_time <= 0){
         _state = _state == State::Break ? State::Focus : State::Break;
         _time = _state == State::Break ? _breakTime : _focusTime;
+        buzz();
     }
     updateLcd();
 }
@@ -50,4 +52,11 @@ void Pomodoro::updateLcd(){
         _lcd.print("0");
     }
     _lcd.print(seconds);
+
+}
+
+void Pomodoro::buzz(){
+    tone(_buzzPin, 1000);
+    delay(1000);
+    noTone(_buzzPin);
 }
