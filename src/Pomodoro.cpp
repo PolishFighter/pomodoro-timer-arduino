@@ -1,8 +1,8 @@
 #include <Pomodoro.h>
 #include <Arduino.h>
 
-Pomodoro::Pomodoro(uint8_t buzz_pin, uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows )
-:_buzzPin{buzz_pin}, _lcd{lcd_Addr, lcd_cols, lcd_rows}
+Pomodoro::Pomodoro(uint16_t breakTime, uint16_t focusTime, uint8_t buzz_pin, uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows )
+: _breakTime{breakTime}, _focusTime{focusTime},_buzzPin{buzz_pin}, _lcd{lcd_Addr, lcd_cols, lcd_rows}
 {
 }
 
@@ -31,12 +31,12 @@ void Pomodoro::update(){
 
 void Pomodoro::updateLcd(){
     _lcd.clear();
-    _lcd.setCursor(1,0);
+    _lcd.setCursor(4,1);
     _clockAnim++;
     _clockAnim = _clockAnim % 8;
     _lcd.write(_clockAnim);
 
-    _lcd.setCursor(3,0);
+    _lcd.setCursor(6,1);
 
     uint16_t minutes = _time/60;
     uint16_t seconds = _time%60;
@@ -53,6 +53,19 @@ void Pomodoro::updateLcd(){
     }
     _lcd.print(seconds);
 
+    //Printing state on screen
+
+    _lcd.setCursor(3, 0);
+
+    switch (_state){
+        case State::Break:
+            _lcd.print("Break Time");
+            break;
+        
+        case State::Focus:
+            _lcd.print("Focus Time");
+            break;
+    }
 }
 
 void Pomodoro::buzz(){
